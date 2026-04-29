@@ -2,7 +2,7 @@
 
 ## Automatización de un pipeline de Machine Learning con GitHub Actions y MLflow
 
-Este proyecto implementa un pipeline reproducible de Machine Learning que carga un dataset externo, realiza preprocesamiento, entrena un modelo, evalúa métricas y registra el experimento con MLflow. La ejecución principal del proyecto está orientada a la nube mediante **GitHub Actions**, por lo que el flujo no depende de la configuración local del computador del usuario.
+Este proyecto implementa un pipeline reproducible de Machine Learning que carga un dataset externo, realiza preprocesamiento, entrena un modelo, evalúa métricas y registra el experimento con MLflow. La ejecución principal del proyecto está orientada a la nube mediante **GitHub Actions**.
 
 ## 1. Dataset utilizado
 
