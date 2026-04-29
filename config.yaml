@@ -1,0 +1,26 @@
+dataset:
+  url: "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv"
+  separator: ";"
+  target_column: "quality"
+  positive_threshold: 6
+
+split:
+  test_size: 0.2
+  random_state: 42
+  stratify: true
+
+model:
+  type: "RandomForestClassifier"
+  n_estimators: 150
+  max_depth: 8
+  random_state: 42
+  class_weight: "balanced"
+
+mlflow:
+  tracking_uri: "file:./mlruns"
+  experiment_name: "wine-quality-mlops"
+  registered_model_name: "wine-quality-random-forest"
+
+artifacts:
+  model_dir: "artifacts/model"
+  metrics_path: "artifacts/metrics.json"
