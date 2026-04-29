@@ -80,25 +80,26 @@ artifacts/metrics.json
 
 ## 6. Uso de MLflow
 
-El script `src/train.py` registra en MLflow:
+Reemplaza la parte de MLflow local por esto:
+
+```markdown
+## Registro de experimentos con MLflow
+
+El proyecto utiliza **MLflow Tracking** para registrar el experimento de Machine Learning durante la ejecución del pipeline.
+
+Durante el entrenamiento se registran:
 
 - Parámetros del dataset.
 - Hiperparámetros del modelo.
 - Métricas de evaluación.
-- Firma del modelo con `infer_signature`.
-- Ejemplo de entrada con `input_example`.
-- Modelo entrenado con `mlflow.sklearn.log_model`.
+- Firma del modelo.
+- Ejemplo de entrada (`input_example`).
+- Modelo entrenado como artefacto.
 
-El tracking se realiza localmente en:
+El tracking se guarda en la carpeta:
 
 ```text
 mlruns/
-```
-
-Para visualizar los experimentos:
-
-```bash
-mlflow ui --backend-store-uri ./mlruns
 ```
 
 ## 7. Automatización con GitHub Actions
