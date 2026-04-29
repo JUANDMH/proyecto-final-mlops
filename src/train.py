@@ -1,15 +1,3 @@
-"""
-Pipeline principal de Machine Learning para el Proyecto Final de MLOps.
-
-Este script:
-1. Carga un dataset externo desde UCI.
-2. Realiza preprocesamiento básico.
-3. Entrena un modelo de clasificación.
-4. Evalúa el modelo con varias métricas.
-5. Registra parámetros, métricas, firma, input_example y modelo en MLflow.
-6. Guarda artefactos locales para GitHub Actions.
-"""
-
 from __future__ import annotations
 
 import json
@@ -122,7 +110,7 @@ def evaluate_model(model: Pipeline, x_test: pd.DataFrame, y_test: pd.Series) -> 
 def save_local_artifacts(
     model: Pipeline, metrics: dict[str, float], config: dict[str, Any]
 ) -> None:
-    """Guarda modelo y métricas como artefactos locales del proyecto."""
+    """Guarda modelo y métricas como artefactos generados por el pipeline."""
     model_dir = Path(config["artifacts"]["model_dir"])
     metrics_path = Path(config["artifacts"]["metrics_path"])
 
