@@ -2,7 +2,7 @@
 
 ## Automatización de un pipeline de Machine Learning con GitHub Actions y MLflow
 
-Este proyecto implementa un pipeline reproducible de Machine Learning que carga un dataset externo, realiza preprocesamiento, entrena un modelo, evalúa métricas y registra el experimento con MLflow. Además, automatiza la ejecución del flujo mediante GitHub Actions.
+Este proyecto implementa un pipeline reproducible de Machine Learning que carga un dataset externo, realiza preprocesamiento, entrena un modelo, evalúa métricas y registra el experimento con MLflow. La ejecución principal del proyecto está orientada a la nube mediante **GitHub Actions**, por lo que el flujo no depende de la configuración local del computador del usuario.
 
 ## 1. Dataset utilizado
 
@@ -10,7 +10,9 @@ Se utiliza el dataset externo **Wine Quality - Red Wine** del repositorio UCI Ma
 
 Fuente del dataset:
 
-`https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv`
+```text
+https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv
+```
 
 Este dataset contiene variables fisicoquímicas de vinos tintos, como acidez, azúcar residual, cloruros, dióxido de azufre, densidad, pH, sulfatos y alcohol. La variable original `quality` se transforma en una variable binaria:
 
@@ -27,7 +29,9 @@ No se utiliza `sklearn.datasets`, cumpliendo el requisito de trabajar con una fu
 │   └── workflows/
 │       └── ml.yml
 ├── artifacts/
+│   └── .gitkeep
 ├── data/
+│   └── .gitkeep
 ├── src/
 │   ├── __init__.py
 │   └── train.py
@@ -72,18 +76,13 @@ El proyecto calcula y registra las siguientes métricas:
 - Recall
 - F1-score
 
-Estas métricas se guardan en MLflow y también en el archivo local:
+Estas métricas se guardan en MLflow y también en el archivo:
 
 ```text
 artifacts/metrics.json
 ```
 
-## 6. Uso de MLflow
-
-Reemplaza la parte de MLflow local por esto:
-
-```markdown
-## Registro de experimentos con MLflow
+## 6. Registro de experimentos con MLflow
 
 El proyecto utiliza **MLflow Tracking** para registrar el experimento de Machine Learning durante la ejecución del pipeline.
 
@@ -92,9 +91,9 @@ Durante el entrenamiento se registran:
 - Parámetros del dataset.
 - Hiperparámetros del modelo.
 - Métricas de evaluación.
-- Firma del modelo.
-- Ejemplo de entrada (`input_example`).
-- Modelo entrenado como artefacto.
+- Firma del modelo con `infer_signature`.
+- Ejemplo de entrada con `input_example`.
+- Modelo entrenado como artefacto mediante `mlflow.sklearn.log_model`.
 
 El tracking se guarda en la carpeta:
 
@@ -102,24 +101,52 @@ El tracking se guarda en la carpeta:
 mlruns/
 ```
 
+En este proyecto, la carpeta `mlruns/` se genera automáticamente durante la ejecución del workflow en **GitHub Actions** y se conserva como parte de los artefactos del workflow.
+
 ## 7. Automatización con GitHub Actions
 
-## Ejecución del proyecto
+El pipeline de CI/CD se encuentra definido en:
 
-Este proyecto está diseñado para ejecutarse principalmente en la nube mediante **GitHub Actions**, evitando depender de la configuración local del computador del usuario.
+```text
+.github/workflows/ml.yml
+```
+
+Este workflow se ejecuta automáticamente cuando se realiza un `push` o un `pull_request` sobre las ramas `main` o `master`. También puede ejecutarse manualmente desde la pestaña **Actions** mediante `workflow_dispatch`.
+
+El workflow ejecuta las siguientes tareas:
+
+```bash
+make install
+make lint
+make test
+make train
+```
+
+Al finalizar correctamente, GitHub Actions guarda como artefacto del workflow:
+
+```text
+mlops-model-artifacts
+```
+
+Este artefacto contiene los resultados generados por el pipeline, incluyendo:
+
+- Carpeta `artifacts/`.
+- Carpeta `mlruns/`.
+- Archivo `artifacts/metrics.json`.
+- Modelo entrenado `artifacts/model/model.joblib`.
+- Evidencia del tracking con MLflow.
+
+## 8. Ejecución del proyecto en la nube
+
+La ejecución principal del proyecto se realiza en la nube mediante **GitHub Actions**.
 
 Cada vez que se realiza un `push` al repositorio o se ejecuta manualmente el workflow desde la pestaña **Actions**, GitHub Actions realiza automáticamente las siguientes etapas:
 
 1. Clona el repositorio.
-2. Configura el entorno de Python.
+2. Configura Python 3.10.
 3. Instala las dependencias del proyecto.
-4. Ejecuta validación de estilo del código.
-5. Ejecuta pruebas básicas.
+4. Ejecuta validación de estilo del código con `ruff`.
+5. Ejecuta pruebas básicas con `pytest`.
 6. Entrena el modelo de Machine Learning.
-7. Registra parámetros, métricas, firma, input_example y modelo con MLflow.
+7. Registra parámetros, métricas, firma, `input_example` y modelo con MLflow.
 8. Guarda los artefactos generados por el pipeline.
-
-El archivo encargado de automatizar este proceso es:
-
-```text
-.github/workflows/ml.yml
