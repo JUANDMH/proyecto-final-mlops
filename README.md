@@ -101,50 +101,24 @@ Para visualizar los experimentos:
 mlflow ui --backend-store-uri ./mlruns
 ```
 
-Luego abrir en el navegador:
+## 7. Automatización con GitHub Actions
 
-```text
-http://127.0.0.1:5000
-```
+## Ejecución del proyecto
 
-## 7. Ejecución local
+Este proyecto está diseñado para ejecutarse principalmente en la nube mediante **GitHub Actions**, evitando depender de la configuración local del computador del usuario.
 
-### Instalar dependencias
-
-```bash
-make install
-```
-
-### Ejecutar pruebas
-
-```bash
-make test
-```
-
-### Entrenar el modelo
-
-```bash
-make train
-```
-
-También se puede ejecutar directamente:
-
-```bash
-python src/train.py
-```
-
-## 8. Automatización con GitHub Actions
-
-El archivo `.github/workflows/ml.yml` ejecuta automáticamente el pipeline cuando se hace un `push`, un `pull_request` o cuando se lanza manualmente desde GitHub Actions.
-
-El workflow realiza estos pasos:
+Cada vez que se realiza un `push` al repositorio o se ejecuta manualmente el workflow desde la pestaña **Actions**, GitHub Actions realiza automáticamente las siguientes etapas:
 
 1. Clona el repositorio.
-2. Configura Python.
-3. Instala dependencias con `make install`.
-4. Valida estilo de código con `make lint`.
-5. Ejecuta pruebas con `make test`.
-6. Entrena el modelo con `make train`.
-7. Guarda como artefactos:
-   - Carpeta `artifacts/`
-   - Carpeta `mlruns/`
+2. Configura el entorno de Python.
+3. Instala las dependencias del proyecto.
+4. Ejecuta validación de estilo del código.
+5. Ejecuta pruebas básicas.
+6. Entrena el modelo de Machine Learning.
+7. Registra parámetros, métricas, firma, input_example y modelo con MLflow.
+8. Guarda los artefactos generados por el pipeline.
+
+El archivo encargado de automatizar este proceso es:
+
+```text
+.github/workflows/ml.yml
